@@ -10,9 +10,7 @@ import { classes } from "./styles";
 const WalletPage = () => {
   const balances: WalletBalance[] = useWalletBalances();
   const prices: Price[] = usePrices();
-
   const formattedBalances = useFormattedBalances(balances);
-
   return (
     <div>
       {formattedBalances.map((balance: FormattedWalletBalance) => (
