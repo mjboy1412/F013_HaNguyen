@@ -5,7 +5,7 @@ import CurrencyInput from "./components/CurrencyInput";
 import CurrencyModal from "./components/CurrencyModal";
 import { ReactComponent as SwapDownIcon } from "assets/icons/svg/arrows/swap-down.svg";
 import { Amount } from "types";
-import { amountTypes, amountsActions, useAmounts } from "./hooks";
+import { amountTypes, useAmounts } from "./hooks";
 import {
   StyledContainer,
   StyledForm,
@@ -14,54 +14,22 @@ import {
 } from "./styles";
 
 const SwapForm = () => {
-  const { amountState, amountDipatch } = useAmounts();
+  const {
+    amountState,
+    setPayAmount,
+    setReceiveAmount,
+    setPayCurrency,
+    swapAmounts,
+    setReceiveCurrency,
+    setFocusPayCurrency,
+    setFocusReceiveCurrency,
+  } = useAmounts();
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] =
     useState<boolean>(false);
 
-  const openCurrencyModal = () => {
-    setIsCurrencyModalOpen(true);
-  };
-  const closeCurrencyModal = () => {
-    setIsCurrencyModalOpen(false);
-  };
-  const setPayAmount = (number: number) => {
-    amountDipatch({ type: amountsActions.UPDATE_PAY_AMOUNT, payload: number });
-  };
-  const setReceiveAmount = (number: number) => {
-    amountDipatch({
-      type: amountsActions.UPDATE_RECEIVE_AMOUNT,
-      payload: number,
-    });
-  };
-  const setPayCurrency = (currency: string, price: number) => {
-    amountDipatch({
-      type: amountsActions.UPDATE_PAY_AMOUNT_CURRENCY,
-      payload: { currency: currency, price: price },
-    });
-  };
-  const swapAmounts = () => {
-    amountDipatch({ type: amountsActions.SWAP_AMOUNTS });
-  };
+  const toggleCurrencyModel = () =>
+    setIsCurrencyModalOpen(!isCurrencyModalOpen);
 
-  const setReceiveCurrency = (currency: string, price: number) => {
-    amountDipatch({
-      type: amountsActions.UPDATE_RECEIVE_AMOUNT_CURRENCY,
-      payload: { currency: currency, price: price },
-    });
-  };
-
-  const handleFocusPayCurrency = () => {
-    amountDipatch({
-      type: amountsActions.UPDATE_CURRENT_FOCUS_AMOUNT_TYPE,
-      payload: amountTypes.PAY,
-    });
-  };
-  const handleFocusReceiveCurrency = () => {
-    amountDipatch({
-      type: amountsActions.UPDATE_CURRENT_FOCUS_AMOUNT_TYPE,
-      payload: amountTypes.RECEIVE,
-    });
-  };
   const handleChangePayAmount = (number: number) => {
     const receiveAmount = caculateAmountCounterPartByItself(
       amountState.receiveAmount,
@@ -161,15 +129,15 @@ const SwapForm = () => {
           label="You pay"
           amount={amountState.payAmount}
           onChangeNumber={handleChangePayAmount}
-          onClickCurrency={openCurrencyModal}
-          onFocus={handleFocusPayCurrency}
+          onClickCurrency={toggleCurrencyModel}
+          onFocus={setFocusPayCurrency}
         />
         <CurrencyInput
           label="You receive"
           amount={amountState.receiveAmount}
           onChangeNumber={handleChangeReceiveAmount}
-          onClickCurrency={openCurrencyModal}
-          onFocus={handleFocusReceiveCurrency}
+          onClickCurrency={toggleCurrencyModel}
+          onFocus={setFocusReceiveCurrency}
         />
         <Button isFullWidth size="big">
           Connect Wallet
@@ -184,7 +152,7 @@ const SwapForm = () => {
             amountState[amountState.currentFocusAmountType].currency
           }
           onSelectCurrency={handleSelectCurrency}
-          closeModal={closeCurrencyModal}
+          closeModal={toggleCurrencyModel}
         />
       )}
     </StyledContainer>

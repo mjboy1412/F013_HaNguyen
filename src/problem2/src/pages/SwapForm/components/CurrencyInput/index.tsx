@@ -21,19 +21,21 @@ interface CurrencyInputProps
   onFocus: () => void;
 }
 
+const MAX_CURRENCY_INPUT_LENGTH = 15;
+const FLOAT_STRING_REGEX = /^[+-]?([0-9]*[.{0,1}])?[0-9]*$/;
+
 const CurrencyInput: React.FunctionComponent<CurrencyInputProps> = ({
   label = "",
   amount,
-  onChangeNumber = () => {},
-  onClickCurrency = () => {},
-  onFocus = () => {},
+  onChangeNumber,
+  onClickCurrency,
+  onFocus,
   ...rest
 }) => {
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
-    if (amount.number === 0) setInput("");
-    if (amount.number > 0) setInput(String(amount.number));
+    setInput(amount.number > 0 ? String(amount.number) : "");
   }, [amount.currency, amount.number]);
 
   const handleClickSelectCurrency = (
@@ -45,10 +47,9 @@ const CurrencyInput: React.FunctionComponent<CurrencyInputProps> = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
-    const maxNumberDigitLength = 15;
     if (
-      value.length < maxNumberDigitLength &&
-      /^[+-]?([0-9]*[.{0,1}])?[0-9]*$/.test(value)
+      value.length < MAX_CURRENCY_INPUT_LENGTH &&
+      FLOAT_STRING_REGEX.test(value)
     ) {
       setInput(value);
       const formatedNumber = Number(value);

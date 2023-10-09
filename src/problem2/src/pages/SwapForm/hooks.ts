@@ -112,5 +112,46 @@ export const useAmounts = () => {
     amountReducer,
     initialAmountsState,
   );
-  return { amountState, amountDipatch };
+  return {
+    amountState,
+    amountDipatch,
+    setPayAmount: (payload: number) =>
+      amountDipatch({
+        type: amountsActions.UPDATE_PAY_AMOUNT,
+        payload,
+      }),
+    setReceiveAmount: (payload: number) => {
+      amountDipatch({
+        type: amountsActions.UPDATE_RECEIVE_AMOUNT,
+        payload,
+      });
+    },
+    setPayCurrency: (currency: string, price: number) => {
+      amountDipatch({
+        type: amountsActions.UPDATE_PAY_AMOUNT_CURRENCY,
+        payload: { currency: currency, price: price },
+      });
+    },
+    swapAmounts: () => {
+      amountDipatch({ type: amountsActions.SWAP_AMOUNTS });
+    },
+    setReceiveCurrency: (currency: string, price: number) => {
+      amountDipatch({
+        type: amountsActions.UPDATE_RECEIVE_AMOUNT_CURRENCY,
+        payload: { currency: currency, price: price },
+      });
+    },
+    setFocusPayCurrency: () => {
+      amountDipatch({
+        type: amountsActions.UPDATE_CURRENT_FOCUS_AMOUNT_TYPE,
+        payload: amountTypes.PAY,
+      });
+    },
+    setFocusReceiveCurrency: () => {
+      amountDipatch({
+        type: amountsActions.UPDATE_CURRENT_FOCUS_AMOUNT_TYPE,
+        payload: amountTypes.RECEIVE,
+      });
+    },
+  };
 };
