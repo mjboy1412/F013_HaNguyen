@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-
-* {
-  font-family: 'Bebas Neue', sans-serif;
+@supports (font-variation-settings: normal) {
+  * {
+    font-family: Basel,sans-serif;
+  }
 }
-
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;

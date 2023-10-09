@@ -2,16 +2,18 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SwapForm from "pages/SwapForm";
-import "./App.css";
+import Header from "components/layout/Header";
+import { StyledApp } from "./styles";
 
 const App = () => (
-  <div className="App">
+  <StyledApp className="App">
+    <Header />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SwapForm />} /> {/* 👈 Renders at /app/ */}
       </Routes>
     </BrowserRouter>
-  </div>
+  </StyledApp>
 );
 
 export default App;
