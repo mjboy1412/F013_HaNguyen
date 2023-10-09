@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { debounce } from "lodash";
 
 import { formatCash } from "services/utils";
 import CryptoIcon from "components/comon/CryptoIcon";

@@ -6,7 +6,6 @@ export const useCurrencies = () => {
   const [currencies, setCurrencies] = useState<Currency[] | []>([]);
 
   useEffect(() => {
-    // declare the data fetching function
     const fetchData = async () => {
       const data = await getCurrencies();
       setCurrencies(data);

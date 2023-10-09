@@ -1,4 +1,5 @@
 import React from "react";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SwapForm from "pages/SwapForm";
@@ -10,7 +11,7 @@ const App = () => (
     <Header />
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SwapForm />} /> {/* 👈 Renders at /app/ */}
+        <Route path="/" element={<SwapForm />} />
       </Routes>
     </BrowserRouter>
   </StyledApp>
