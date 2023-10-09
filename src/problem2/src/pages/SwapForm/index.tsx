@@ -4,8 +4,7 @@ import Button from "components/comon/Button";
 import CurrencyInput from "./components/CurrencyInput";
 import CurrencyModal from "./components/CurrencyModal";
 import { ReactComponent as SwapDownIcon } from "assets/icons/svg/arrows/swap-down.svg";
-import { Amount } from "types";
-import { amountTypes, useAmounts } from "./hooks";
+import { amountTypes, useAmounts, useComputedAmounts } from "./hooks";
 import {
   StyledContainer,
   StyledForm,
@@ -24,6 +23,8 @@ const SwapForm = () => {
     setFocusPayCurrency,
     setFocusReceiveCurrency,
   } = useAmounts();
+  const { caculateAmountCounterPartByItself, caculateAmountByItsCounterPart } =
+    useComputedAmounts();
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] =
     useState<boolean>(false);
 
@@ -31,94 +32,57 @@ const SwapForm = () => {
     setIsCurrencyModalOpen(!isCurrencyModalOpen);
 
   const handleChangePayAmount = (number: number) => {
-    const receiveAmount = caculateAmountCounterPartByItself(
-      amountState.receiveAmount,
-      { ...amountState.payAmount, number: number },
+    setReceiveAmount(
+      caculateAmountCounterPartByItself(amountState.receiveAmount, {
+        ...amountState.payAmount,
+        number: number,
+      }),
     );
-    setReceiveAmount(receiveAmount);
     setPayAmount(number);
   };
+
   const handleChangeReceiveAmount = (number: number) => {
-    const payAmount = caculateAmountCounterPartByItself(amountState.payAmount, {
-      ...amountState.receiveAmount,
-      number: number,
-    });
-    setPayAmount(payAmount);
+    setPayAmount(
+      caculateAmountCounterPartByItself(amountState.payAmount, {
+        ...amountState.receiveAmount,
+        number: number,
+      }),
+    );
     setReceiveAmount(number);
   };
+
   const handleSelectCurrency = (currency: string, price: number) => {
     if (amountState.currentFocusAmountType === amountTypes.PAY) {
-      const calculatedPay = caculateAmountByItsCounterPart(
-        {
-          ...amountState.payAmount,
-          currency: currency,
-          price: price,
-        },
-        amountState.receiveAmount,
+      setPayAmount(
+        caculateAmountByItsCounterPart(
+          {
+            ...amountState.payAmount,
+            currency: currency,
+            price: price,
+          },
+          amountState.receiveAmount,
+        ),
       );
-      setPayAmount(calculatedPay);
       setPayCurrency(currency, price);
     }
     if (amountState.currentFocusAmountType === amountTypes.RECEIVE) {
-      const calculatedReceive = caculateAmountByItsCounterPart(
-        {
-          ...amountState.receiveAmount,
-          currency: currency,
-          price: price,
-        },
-        amountState.payAmount,
+      setReceiveAmount(
+        caculateAmountByItsCounterPart(
+          {
+            ...amountState.receiveAmount,
+            currency: currency,
+            price: price,
+          },
+          amountState.payAmount,
+        ),
       );
-      setReceiveAmount(calculatedReceive);
       setReceiveCurrency(currency, price);
     }
   };
+
   const handleClickSwap = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     swapAmounts();
-  };
-
-  const caculateAmountByItsCounterPart = (
-    amountToBeCaculated: Amount,
-    amountToBeCaculatedBy: Amount,
-  ): number => {
-    const isAmountToBeCaculated =
-      amountToBeCaculated.currency && amountToBeCaculated.price > 0;
-    const isAmountToBeCaculatedBy =
-      amountToBeCaculatedBy.currency &&
-      amountToBeCaculatedBy.price > 0 &&
-      amountToBeCaculatedBy.number > 0;
-
-    if (isAmountToBeCaculated && isAmountToBeCaculatedBy)
-      return Number(
-        (
-          (amountToBeCaculatedBy.number * amountToBeCaculatedBy.price) /
-          amountToBeCaculated.price
-        ).toFixed(10),
-      );
-
-    return 0;
-  };
-
-  const caculateAmountCounterPartByItself = (
-    amountToBeCaculated: Amount,
-    amountToBeCaculatedBy: Amount,
-  ): number => {
-    const isAmountToBeCaculated =
-      amountToBeCaculated.currency && amountToBeCaculated.price > 0;
-    const isAmountToBeCaculatedBy =
-      amountToBeCaculatedBy.currency &&
-      amountToBeCaculatedBy.price > 0 &&
-      amountToBeCaculatedBy.number > 0;
-
-    if (isAmountToBeCaculated && isAmountToBeCaculatedBy)
-      return Number(
-        (
-          (amountToBeCaculatedBy.number * amountToBeCaculatedBy.price) /
-          amountToBeCaculated.price
-        ).toFixed(10),
-      );
-
-    return amountToBeCaculated.number;
   };
 
   return (
